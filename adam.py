@@ -1,1 +1,1 @@
-print("It is prac code.")
+print("prac.")
