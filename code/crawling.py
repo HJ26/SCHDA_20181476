@@ -3,14 +3,16 @@ from bs4 import BeautifulSoup
 import re
 
 def crawling_cloth(clothes):
-    '''find the two values to sell the clothes and return the dictionary
+    '''find the data for clothes review and return the dictionary
     
     :param clothes: the list of clothes that wanted information to review
     :type clothes : a list of strings
-    :return: dictionary of returned : {shoppin mall name : links}
+    :return: dictionary of returned 
     :rtype: dictionary 
     
     '''
+
+    clothesReviews = dict()
     for searchWord in clothes:
         percentEncodingWord = urllib.parse.quote(searchWord)
         url = 'https://search.shopping.naver.com/search/all?query=' +  percentEncodingWord +'&frm=NVSHATC&prevQuery=' + percentEncodingWord
@@ -23,47 +25,51 @@ def crawling_cloth(clothes):
         
         html = urllib.request.urlopen(url)
         crw = BeautifulSoup(html,'html.parser')
-
-        shops = crw.find_all('div',{'class':'productByMall_text_over__1rkUg'})
         
-        shoppingMall = dict()
-        namelink = dict()
-        for i in shops:
-            name = i.find('img')['alt']
-            bridgeLinks = i.find('a')['href']
-    
-            html = urllib.request.urlopen(bridgeLinks)
-            crw = BeautifulSoup(html,'html.parser')
-
-            text = str(crw)
-            url = text.split("  ")
-            for i in url:
-                if 'var targetUrl' in i:
-                    urls = i.split('\"')
-                    for j in urls:
-                        if 'http://' in j:
-                           link = j
-            namelink[name] = link
-
-        shoppingMall[searchWord] = namelink
-    return shoppingMall
+        nReviews = crw.find('span',{'class':'totalArea_num2__29zT5'}).text
+        stars = crw.find_all('span',{'class':'reviewItems_average__16Ya-'})
+        etc = crw.find_all('span',{'class':'reviewItems_etc__1YqVF'})
+        reviews = crw.find_all('p',{'class':'reviewItems_text__XIsTc'})
         
+        k = 0
+        allReviews = dict()
+        for i in range(0,int(nReviews)):
+            star = {"star":stars[i].text}
+            review = {"review":reviews[i].text}
+            shoppingMall = {"shoppingMall":etc[k].text}
+            date = {'date':etc[k+2].text}
+            user = etc[k+1].text
+            etcInfo = [shoppingMall,star,date,review]
+            allReviews[user] = etcInfo
+            if i != int(nReviews)-1:
+                check = etc[k+4].text
+                if check[3] == '*':
+                    k += 3
+                else: k += 4
+
             
-def crawling_review_eleven(url,reviews):
-    
-    html = urllib.request.urlopen(url)
-    crw = BeautifulSoup(html,'html.parser')
+        clothesReviews[searchWord] = allReviews
+    return clothesReviews
 
-    allReviews = crw.find('dii',{'class':'area_list'})
 
-    print(crw)
-    reviews = crw.find_all('li')
-    print(reviews)
 
-    for i in reviews:
-        name = i.find('dt',{'class':'name'}).text
-        print(name)
+def sites(clothesReviews):
+    '''count the site information to using Review database
 
+    :param clothesReviews: dictionary to saving the review data
+    :type clothesReviews: dictionary
+    :return: return the dictionary to company data
+    :rtype: dictionary
+
+    '''
+    shoppingMall = dict()
+    for i in clothesReviews.values():
+        for j in i.values():
+            name = j[0].values()
+            if name in shoppingMall:
+                shoppingMall[name] += 1
+            else: shoppingMall[name] = 1
+    return shoppingMall
 
 
 
@@ -71,18 +77,9 @@ def crawling_review_eleven(url,reviews):
 def main():
     cloths = ['파에니 포켓 반팔 자켓']
     reviews = dict()
-    shoppingMall = crawling_cloth(cloths)
+    clothReviews = crawling_cloth(cloths)
+    shoppingMall = sites(clothReviews)
     print(shoppingMall)
-
-    
-    for i in shoppingMall:
-        for j in shoppingMall[i]:
-            print(j)
-            if j == '11번가':
-                print(shoppingMall[i][j])
-                crawling_review_eleven(shoppingMall[i][j],reviews)
-
-    
 
 
 if __name__=="__main__":
