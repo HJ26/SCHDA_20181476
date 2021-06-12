@@ -1,5 +1,6 @@
 import urllib.request
 from bs4 import BeautifulSoup
+import re
 
 def crawling_cloth(clothes):
     '''find the two values to sell the clothes and return the dictionary
@@ -11,7 +12,7 @@ def crawling_cloth(clothes):
     
     '''
     for searchWord in clothes:
-        percentEncodingWord = urllib.parse.quote(sw)
+        percentEncodingWord = urllib.parse.quote(searchWord)
         url = 'https://search.shopping.naver.com/search/all?query=' +  percentEncodingWord +'&frm=NVSHATC&prevQuery=' + percentEncodingWord
 
         html = urllib.request.urlopen(url)
@@ -29,21 +30,60 @@ def crawling_cloth(clothes):
         namelink = dict()
         for i in shops:
             name = i.find('img')['alt']
-            links = i.find('a')['href']
-            namelink[name] = links
+            bridgeLinks = i.find('a')['href']
+    
+            html = urllib.request.urlopen(bridgeLinks)
+            crw = BeautifulSoup(html,'html.parser')
 
-        shoppingMall[sw] = namelink
+            text = str(crw)
+            url = text.split("  ")
+            for i in url:
+                if 'var targetUrl' in i:
+                    urls = i.split('\"')
+                    for j in urls:
+                        if 'http://' in j:
+                           link = j
+            namelink[name] = link
+
+        shoppingMall[searchWord] = namelink
     return shoppingMall
         
             
-def crawling_
+def crawling_review_eleven(url,reviews):
+    
+    html = urllib.request.urlopen(url)
+    crw = BeautifulSoup(html,'html.parser')
+
+    allReviews = crw.find('dii',{'class':'area_list'})
+
+    print(crw)
+    reviews = crw.find_all('li')
+    print(reviews)
+
+    for i in reviews:
+        name = i.find('dt',{'class':'name'}).text
+        print(name)
+
+
 
 
 
 def main():
     cloths = ['파에니 포켓 반팔 자켓']
-    a = crawling_cloth(cloths)
-    print(a)
+    reviews = dict()
+    shoppingMall = crawling_cloth(cloths)
+    print(shoppingMall)
+
+    
+    for i in shoppingMall:
+        for j in shoppingMall[i]:
+            print(j)
+            if j == '11번가':
+                print(shoppingMall[i][j])
+                crawling_review_eleven(shoppingMall[i][j],reviews)
+
+    
+
 
 if __name__=="__main__":
     main()
