@@ -137,7 +137,13 @@ def main():
     clothReviews = crawling_cloth(cloths)
     shoppingMall = sites(clothReviews)
     clothesInfo = clothes(clothReviews)
+    print(clothReviews)
+    print("\n"*2)
+    print(shoppingMall)
+    print("\n"*2)
     print(clothesInfo)
+    print("\n"*2)
+    
 
 
 if __name__=="__main__":
