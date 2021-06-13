@@ -94,14 +94,50 @@ def sites(clothesReviews):
 
 
 
-#def clothes
+def clothes(clothesReviews):
+    '''summarise the clothes information to using Review Database
+
+    :param clothesReview: dictionary to saving the review data
+    :type clothesReviews: dictionary
+    :return: return the dictionary to company data
+    :rtype: dictionary
+    
+    '''
+
+    clothes = dict()
+    for i in clothesReviews:
+        value = clothesReviews[i]
+        nReviews = len(value.keys())
+        nsites = dict()
+        meanStar = {'star':0}
+        for j in clothesReviews[i].values():
+            n = 1
+            name = str(j[0].values())
+            name = name[14:-3]
+
+            star = j[1].values()
+            star = int(str(star)[-3])
+
+            meanStars = star + meanStar['star']
+        
+            if nsites.get(name) != None:
+                nsites[name] += 1
+            else: nsites[name] = 1
+
+        nsite = len(nsites.keys())
+        siteInfo2 = {"nReviews":nReviews,'nsites':nsite,'star':meanStars/nsite}
+        clothes[i] = siteInfo2
+            
+        
+    return clothes
 
 def main():
-    cloths = ['파에니 포켓 반팔 자켓','아엘 루즈핏 자켓']
+    cloths = ['파에니 포켓 반팔 자켓','아엘 루즈핏 자켓','하기반팔자켓','베르닌 배색 가디건','일루미 레이스 롱 원피스','로로니 체크 파자마 세트','솔루니 린넨 뷔스티에','포라 린넨 머메이드 롱 스커트','러브유 카라 블라우스']
     reviews = dict()
     clothReviews = crawling_cloth(cloths)
     shoppingMall = sites(clothReviews)
-    print(shoppingMall)
+    clothesInfo = clothes(clothReviews)
+    print(clothesInfo)
 
 
 if __name__=="__main__":
