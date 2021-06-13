@@ -26,7 +26,8 @@ def crawling_cloth(clothes):
         html = urllib.request.urlopen(url)
         crw = BeautifulSoup(html,'html.parser')
         
-        nReviews = crw.find('span',{'class':'totalArea_num2__29zT5'}).text
+        nReviews = crw.find('li',{'class':'filter_on__X0_Fb'}).text
+        nReviews = nReviews[-2]
         stars = crw.find_all('span',{'class':'reviewItems_average__16Ya-'})
         etc = crw.find_all('span',{'class':'reviewItems_etc__1YqVF'})
         reviews = crw.find_all('p',{'class':'reviewItems_text__XIsTc'})
@@ -34,18 +35,20 @@ def crawling_cloth(clothes):
         k = 0
         allReviews = dict()
         for i in range(0,int(nReviews)):
-            star = {"star":stars[i].text}
+            star = {"star":int(str(stars[i].text)[-1])}
             review = {"review":reviews[i].text}
             shoppingMall = {"shoppingMall":etc[k].text}
             date = {'date':etc[k+2].text}
             user = etc[k+1].text
             etcInfo = [shoppingMall,star,date,review]
             allReviews[user] = etcInfo
-            if i != int(nReviews)-1:
+            try:
                 check = etc[k+4].text
                 if check[3] == '*':
                     k += 3
                 else: k += 4
+            except:
+                break
 
             
         clothesReviews[searchWord] = allReviews
@@ -63,19 +66,38 @@ def sites(clothesReviews):
 
     '''
     shoppingMall = dict()
+    mallInfo = dict()
     for i in clothesReviews.values():
         for j in i.values():
-            name = j[0].values()
-            if name in shoppingMall:
-                shoppingMall[name] += 1
-            else: shoppingMall[name] = 1
+            name = str(j[0].values())
+            name = name[14:-3]
+            star = j[1].values()
+            star = int(str(star)[-3])
+            if shoppingMall.get(name) != None:
+                
+                mallInfo = shoppingMall[name]
+                meanStar = mallInfo["star"]
+                n = mallInfo["nReviews"]
+            
+                n += 1
+                meanStar = (star+meanStar)/n
+            
+                mallInfo = {"nReviews":n, "star":meanStar}
+                del(shoppingMall[name])
+                shoppingMall[name] = mallInfo
+            else:
+                mallInfo2 = dict()
+                mallInfo2["nReviews"] = 1
+                mallInfo2["star"] = star
+                shoppingMall[name] = mallInfo2
     return shoppingMall
 
 
 
+#def clothes
 
 def main():
-    cloths = ['파에니 포켓 반팔 자켓']
+    cloths = ['파에니 포켓 반팔 자켓','아엘 루즈핏 자켓']
     reviews = dict()
     clothReviews = crawling_cloth(cloths)
     shoppingMall = sites(clothReviews)
