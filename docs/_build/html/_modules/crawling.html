@@ -1,0 +1,234 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>crawling &#8212; SCHDA_20181476  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="색인" href="../genindex.html" />
+    <link rel="search" title="검색" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crawling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<div class="viewcode-block" id="crawling_cloth"><a class="viewcode-back" href="../crawling.html#crawling.crawling_cloth">[문서]</a><span class="k">def</span> <span class="nf">crawling_cloth</span><span class="p">(</span><span class="n">clothes</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;find the data for clothes review and return the dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    :param clothes: the list of clothes that wanted information to review</span>
+<span class="sd">    :type clothes : a list of strings</span>
+<span class="sd">    :return: dictionary of returned </span>
+<span class="sd">    :rtype: dictionary </span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">clothesReviews</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">searchWord</span> <span class="ow">in</span> <span class="n">clothes</span><span class="p">:</span>
+        <span class="n">percentEncodingWord</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">searchWord</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://search.shopping.naver.com/search/all?query=&#39;</span> <span class="o">+</span>  <span class="n">percentEncodingWord</span> <span class="o">+</span><span class="s1">&#39;&amp;frm=NVSHATC&amp;prevQuery=&#39;</span> <span class="o">+</span> <span class="n">percentEncodingWord</span>
+
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">crw</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+        <span class="n">html</span> <span class="o">=</span> <span class="n">crw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;basicList_title__3P9Q7&#39;</span><span class="p">})</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
+        
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">crw</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+        
+        <span class="n">nReviews</span> <span class="o">=</span> <span class="n">crw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;filter_on__X0_Fb&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">nReviews</span> <span class="o">=</span> <span class="n">nReviews</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stars</span> <span class="o">=</span> <span class="n">crw</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;reviewItems_average__16Ya-&#39;</span><span class="p">})</span>
+        <span class="n">etc</span> <span class="o">=</span> <span class="n">crw</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;reviewItems_etc__1YqVF&#39;</span><span class="p">})</span>
+        <span class="n">reviews</span> <span class="o">=</span> <span class="n">crw</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;reviewItems_text__XIsTc&#39;</span><span class="p">})</span>
+        
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">allReviews</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nReviews</span><span class="p">)):</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;star&quot;</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])}</span>
+            <span class="n">review</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;review&quot;</span><span class="p">:</span><span class="n">reviews</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">}</span>
+            <span class="n">shoppingMall</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;shoppingMall&quot;</span><span class="p">:</span><span class="n">etc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">}</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span><span class="n">etc</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">}</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">etc</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">etcInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">shoppingMall</span><span class="p">,</span><span class="n">star</span><span class="p">,</span><span class="n">date</span><span class="p">,</span><span class="n">review</span><span class="p">]</span>
+            <span class="n">allReviews</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="n">etcInfo</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">check</span> <span class="o">=</span> <span class="n">etc</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+                <span class="k">if</span> <span class="n">check</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">3</span>
+                <span class="k">else</span><span class="p">:</span> <span class="n">k</span> <span class="o">+=</span> <span class="mi">4</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            
+        <span class="n">clothesReviews</span><span class="p">[</span><span class="n">searchWord</span><span class="p">]</span> <span class="o">=</span> <span class="n">allReviews</span>
+    <span class="k">return</span> <span class="n">clothesReviews</span></div>
+
+
+
+<div class="viewcode-block" id="sites"><a class="viewcode-back" href="../crawling.html#crawling.sites">[문서]</a><span class="k">def</span> <span class="nf">sites</span><span class="p">(</span><span class="n">clothesReviews</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;count the site information to using Review database</span>
+
+<span class="sd">    :param clothesReviews: dictionary to saving the review data</span>
+<span class="sd">    :type clothesReviews: dictionary</span>
+<span class="sd">    :return: return the dictionary to company data</span>
+<span class="sd">    :rtype: dictionary</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">shoppingMall</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">mallInfo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">clothesReviews</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">star</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">shoppingMall</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                
+                <span class="n">mallInfo</span> <span class="o">=</span> <span class="n">shoppingMall</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">meanStar</span> <span class="o">=</span> <span class="n">mallInfo</span><span class="p">[</span><span class="s2">&quot;star&quot;</span><span class="p">]</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">mallInfo</span><span class="p">[</span><span class="s2">&quot;nReviews&quot;</span><span class="p">]</span>
+            
+                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">meanStar</span> <span class="o">=</span> <span class="p">(</span><span class="n">star</span><span class="o">+</span><span class="n">meanStar</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+            
+                <span class="n">mallInfo</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nReviews&quot;</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="s2">&quot;star&quot;</span><span class="p">:</span><span class="n">meanStar</span><span class="p">}</span>
+                <span class="k">del</span><span class="p">(</span><span class="n">shoppingMall</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                <span class="n">shoppingMall</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mallInfo</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mallInfo2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">mallInfo2</span><span class="p">[</span><span class="s2">&quot;nReviews&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">mallInfo2</span><span class="p">[</span><span class="s2">&quot;star&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">star</span>
+                <span class="n">shoppingMall</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mallInfo2</span>
+    <span class="k">return</span> <span class="n">shoppingMall</span></div>
+
+
+
+<div class="viewcode-block" id="clothes"><a class="viewcode-back" href="../crawling.html#crawling.clothes">[문서]</a><span class="k">def</span> <span class="nf">clothes</span><span class="p">(</span><span class="n">clothesReviews</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;summarise the clothes information to using Review Database</span>
+
+<span class="sd">    :param clothesReview: dictionary to saving the review data</span>
+<span class="sd">    :type clothesReviews: dictionary</span>
+<span class="sd">    :return: return the dictionary to company data</span>
+<span class="sd">    :rtype: dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">clothes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">clothesReviews</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">clothesReviews</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">nReviews</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">nsites</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">meanStar</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;star&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">clothesReviews</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="n">star</span> <span class="o">=</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">star</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">star</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+
+            <span class="n">meanStars</span> <span class="o">=</span> <span class="n">star</span> <span class="o">+</span> <span class="n">meanStar</span><span class="p">[</span><span class="s1">&#39;star&#39;</span><span class="p">]</span>
+        
+            <span class="k">if</span> <span class="n">nsites</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nsites</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span> <span class="n">nsites</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">nsite</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nsites</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">siteInfo2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nReviews&quot;</span><span class="p">:</span><span class="n">nReviews</span><span class="p">,</span><span class="s1">&#39;nsites&#39;</span><span class="p">:</span><span class="n">nsite</span><span class="p">,</span><span class="s1">&#39;star&#39;</span><span class="p">:</span><span class="n">meanStars</span><span class="o">/</span><span class="n">nsite</span><span class="p">}</span>
+        <span class="n">clothes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">siteInfo2</span>
+            
+        
+    <span class="k">return</span> <span class="n">clothes</span></div>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../crawling.html#crawling.main">[문서]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">cloths</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;파에니 포켓 반팔 자켓&#39;</span><span class="p">,</span><span class="s1">&#39;아엘 루즈핏 자켓&#39;</span><span class="p">,</span><span class="s1">&#39;하기반팔자켓&#39;</span><span class="p">,</span><span class="s1">&#39;베르닌 배색 가디건&#39;</span><span class="p">,</span><span class="s1">&#39;일루미 레이스 롱 원피스&#39;</span><span class="p">,</span><span class="s1">&#39;로로니 체크 파자마 세트&#39;</span><span class="p">,</span><span class="s1">&#39;솔루니 린넨 뷔스티에&#39;</span><span class="p">,</span><span class="s1">&#39;포라 린넨 머메이드 롱 스커트&#39;</span><span class="p">,</span><span class="s1">&#39;러브유 카라 블라우스&#39;</span><span class="p">]</span>
+    <span class="n">reviews</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">clothReviews</span> <span class="o">=</span> <span class="n">crawling_cloth</span><span class="p">(</span><span class="n">cloths</span><span class="p">)</span>
+    <span class="n">shoppingMall</span> <span class="o">=</span> <span class="n">sites</span><span class="p">(</span><span class="n">clothReviews</span><span class="p">)</span>
+    <span class="n">clothesInfo</span> <span class="o">=</span> <span class="n">clothes</span><span class="p">(</span><span class="n">clothReviews</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">clothReviews</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">shoppingMall</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">clothesInfo</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span></div>
+    
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">모듈 코드</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>빠른 검색</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="바로 가기" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

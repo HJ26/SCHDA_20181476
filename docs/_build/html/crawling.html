@@ -1,0 +1,145 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>crawling module &#8212; SCHDA_20181476  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-crawling">
+<span id="crawling-module"></span><h1>crawling module<a class="headerlink" href="#module-crawling" title="제목 주소">¶</a></h1>
+<dl class="function">
+<dt id="crawling.clothes">
+<code class="descclassname">crawling.</code><code class="descname">clothes</code><span class="sig-paren">(</span><em>clothesReviews</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawling.html#clothes"><span class="viewcode-link">[소스]</span></a><a class="headerlink" href="#crawling.clothes" title="정의 주소">¶</a></dt>
+<dd><p>summarise the clothes information to using Review Database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>clothesReview</strong> -- dictionary to saving the review data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">return the dictionary to company data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crawling.crawling_cloth">
+<code class="descclassname">crawling.</code><code class="descname">crawling_cloth</code><span class="sig-paren">(</span><em>clothes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawling.html#crawling_cloth"><span class="viewcode-link">[소스]</span></a><a class="headerlink" href="#crawling.crawling_cloth" title="정의 주소">¶</a></dt>
+<dd><p>find the data for clothes review and return the dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>clothes</strong> -- the list of clothes that wanted information to review</td>
+</tr>
+</tbody>
+</table>
+<p>:type clothes : a list of strings
+:return: dictionary of returned 
+:rtype: dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crawling.main">
+<code class="descclassname">crawling.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawling.html#main"><span class="viewcode-link">[소스]</span></a><a class="headerlink" href="#crawling.main" title="정의 주소">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crawling.sites">
+<code class="descclassname">crawling.</code><code class="descname">sites</code><span class="sig-paren">(</span><em>clothesReviews</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawling.html#sites"><span class="viewcode-link">[소스]</span></a><a class="headerlink" href="#crawling.sites" title="정의 주소">¶</a></dt>
+<dd><p>count the site information to using Review database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">매개 변수:</th><td class="field-body"><strong>clothesReviews</strong> (<em>dictionary</em>) -- dictionary to saving the review data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">반환:</th><td class="field-body">return the dictionary to company data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">반환 형식:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>빠른 검색</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="바로 가기" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/crawling.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
